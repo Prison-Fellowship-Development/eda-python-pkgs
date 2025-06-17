@@ -20,5 +20,11 @@ dependencies = [
     "certifi",
     "beautifulsoup4",
     "requests",
+    "lxml",
+    "httpx",
+    "attrs",
+    "cachetools",
+    "authlib",
+    "urllib3",
     "datetime"
 ]

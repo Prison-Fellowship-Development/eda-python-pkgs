@@ -14,6 +14,11 @@ requires-python = ">=3.7"
 dependencies = [
     "confluent_kafka",
     "avro",
+    "fastavro",
     "grpcio",
-    "grpcio-tools"
+    "grpcio-tools",
+    "certifi",
+    "beautifulsoup4",
+    "requests",
+    "datetime"
 ]

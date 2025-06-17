@@ -15,6 +15,5 @@ dependencies = [
     "confluent_kafka",
     "avro",
     "grpcio",
-    "grpcio-tools",
-    "json"
+    "grpcio-tools"
 ]

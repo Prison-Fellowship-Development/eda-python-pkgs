@@ -1,2 +1,2 @@
-# eda-phython-libs
-PFM Python EDA libraries
+# eda-python-pkgs
+PFM Python EDA packages

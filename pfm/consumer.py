@@ -37,12 +37,10 @@ class Consumer:
                     "auto.offset.reset": "earliest",
                 }
             )
-            self.consumer.subscribe([self.topic])
 
+        self.consumer.subscribe([self.topic])
         yield
+        self.consumer.close()
 
     def poll(self, timeout=1.0):
         return self.consumer.poll(timeout)
-
-    def close(self):
-        return self.consumer.close()

@@ -136,29 +136,22 @@ class PubSubAPI:
                 , metadata=authmetadata)
 
             for data in substream:
-                self.logger.debug("fetch: top of for data in substream")
                 rpc_id = data.rpc_id
                 self.logger.info("fetch: rpc_id = {}".format(rpc_id))
                 self.semaphore.release()
-                self.logger.debug("fetch: after semaphone.release()")
                 if data.events:
-                    self.logger.debug("fetch: data.events is true")
                     # if all requested events are delivered,
                     # release the semaphore so that a new FetchRequest gets sent
                     if data.pending_num_requested == 0:
-                        self.logger.debug("fetch: before semaphone.release() #2")
                         self.semaphore.release()
-                        self.logger.debug("fetch: after semaphone.release() #2")
 
                     self.logger.debug("fetch: Number of events received: {}".format(len(data.events)))
                     self.logger.debug("fetch: Event ID {}".format(data.events[0].event.id))
                     payloadbytes = data.events[0].event.payload
                     schemaid = data.events[0].event.schema_id
-                    self.logger.debug("fetch: before stub.GetSchema()")
                     schema = stub.GetSchema(
                             pb2.SchemaRequest(schema_id=schemaid),
                             metadata=authmetadata).schema_json
-                    self.logger.debug("fetch: before self.decode()")
                     decoded = self.decode(schema, payloadbytes)
                     self.logger.debug("fetch: Got an event! {}".format(json.dumps(decoded, indent=2)))
                     yield {

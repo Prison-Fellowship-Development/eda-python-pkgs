@@ -2,6 +2,7 @@ import os
 import confluent_kafka
 
 
+# TODO: Provide contextmanager functionality
 class Producer:
 
     def __init__(self, topic, client_id = None):

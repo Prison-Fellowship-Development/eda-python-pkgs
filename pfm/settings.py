@@ -12,7 +12,7 @@ class KafkaSettings(BaseSettings):
     schema_registry_url: str = Field(default="http://localhost:8081")
 
     def generate_consumer_configuration(self, group_id: str) -> dict:
-        return {
+        config = {
             "bootstrap.servers": self.servers,
             "security.protocol": self.protocol,
             "sasl.mechanism": self.sasl_mechanism,
@@ -21,5 +21,7 @@ class KafkaSettings(BaseSettings):
             "group.id": group_id,
             "auto.offset.reset": self.auto_offset_reset,
         }
+        
+        return {k: v for k, v in config.items() if v is not None}
 
     model_config = SettingsConfigDict(env_prefix="PFM_EVENT_")

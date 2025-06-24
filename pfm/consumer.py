@@ -1,15 +1,15 @@
 import os
-from typing import TypeVar, Generic
+from typing import TypeVar, Generic, Iterator, Type
 
 import confluent_kafka
 from confluent_kafka.schema_registry import SchemaRegistryClient
 from confluent_kafka.schema_registry.avro import AvroDeserializer
 from confluent_kafka.serialization import SerializationContext, MessageField
-from pydantic import BaseModel
+from dataclasses_avroschema.pydantic import AvroBaseModel
 
 from .settings import KafkaSettings
 
-T = TypeVar("T", bound=BaseModel)
+T = TypeVar("T", bound=AvroBaseModel)
 
 settings = KafkaSettings()
 
@@ -18,12 +18,12 @@ class Consumer(Generic[T]):
     _consumer: confluent_kafka.Consumer | None = None
 
     def __init__(
-        self, topic, group_id=None, timeout=2.0, avro_schema: str | None = None
+        self, topic, group_id=None, timeout=2.0, model_class: Type[T] | None = None
     ):
         self.topic = topic
         self.timeout = timeout
         self.group_id = group_id
-        self.avro_schema = avro_schema
+        self.model_class = model_class
         self._deserializer: AvroDeserializer | None = None
         self.group_id = (
             group_id or f"consumer-group-{os.getpid()}"
@@ -42,11 +42,11 @@ class Consumer(Generic[T]):
 
     @property
     def deserializer(self):
-        if self.avro_schema:
+        if self.model_class:
             self._deserializer = AvroDeserializer(
                 SchemaRegistryClient({"url": settings.schema_registry_url}),
-                self.avro_schema,
-                lambda msg, _: T.model_validate(msg),
+                self.model_class.avro_schema(),
+                lambda msg, _: self.model_class.model_validate(msg),
             )
         return self._deserializer
 
@@ -64,7 +64,7 @@ class Consumer(Generic[T]):
             self._consumer.close()
             self._consumer = None
 
-    def __iter__(self) -> T:
+    def __iter__(self) -> Iterator[T]:
         while not self._should_exit:
             msg = self.consumer.poll(self.timeout)
             if msg is None:

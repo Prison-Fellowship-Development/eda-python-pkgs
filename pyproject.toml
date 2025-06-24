@@ -29,4 +29,5 @@ dependencies = [
     "datetime",
     "pydantic-settings>=2.0.3",
     "pydantic>=2.5.3",
+    "dataclasses-avroschema>=0.47.3",
 ]

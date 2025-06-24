@@ -26,5 +26,7 @@ dependencies = [
     "cachetools",
     "authlib",
     "urllib3",
-    "datetime"
+    "datetime",
+    "pydantic-settings>=2.0.3",
+    "pydantic>=2.5.3",
 ]

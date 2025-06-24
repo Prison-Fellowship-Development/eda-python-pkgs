@@ -3,7 +3,11 @@ from typing import TypeVar, Generic
 
 import confluent_kafka
 
+from .settings import KafkaSettings
+
 T = TypeVar("T")
+
+settings = KafkaSettings()
 
 
 class Consumer(Generic[T]):
@@ -23,24 +27,7 @@ class Consumer(Generic[T]):
     def consumer(self) -> confluent_kafka.Consumer:
         if not self._consumer:
             self._consumer = confluent_kafka.Consumer(
-                {
-                    "bootstrap.servers": os.getenv(
-                        "PFM_EVENT_SERVERS",
-                        "localhost:19092,localhost:29092,localhost:39092",
-                    ),
-                    "security.protocol": os.getenv(
-                        "PFM_EVENT_SECURITY_PROTOCOL", "SASL_PLAINTEXT"
-                    ),
-                    "sasl.mechanism": os.getenv(
-                        "PFM_EVENT_SASL_MECHANISM", "SCRAM-SHA-256"
-                    ),
-                    "sasl.username": os.getenv("PFM_EVENT_SASL_USERNAME", "superuser"),
-                    "sasl.password": os.getenv(
-                        "PFM_EVENT_SASL_PASSWORD", "secretpassword"
-                    ),
-                    "group.id": self.group_id,
-                    "auto.offset.reset": "earliest",
-                }
+                settings.generate_consumer_configuration(self.group_id)
             )
         self._consumer.subscribe([self.topic])
         return self._consumer

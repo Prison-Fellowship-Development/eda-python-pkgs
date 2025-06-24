@@ -6,8 +6,8 @@ class KafkaSettings(BaseSettings):
     servers: str = Field(default="localhost:9092")
     protocol: str = Field(default="SASL_PLAINTEXT")
     sasl_mechanism: str = Field(default="SCRAM-SHA-256")
-    sasl_username: str = Field(default="superuser")
-    sasl_password: str = Field(default="secretpassword")
+    sasl_username: str = Field(default="")
+    sasl_password: str = Field(default="")
     auto_offset_reset: str = Field(default="earliest")
     schema_registry_url: str = Field(default="http://localhost:8081")
 
@@ -21,7 +21,7 @@ class KafkaSettings(BaseSettings):
             "group.id": group_id,
             "auto.offset.reset": self.auto_offset_reset,
         }
-        
-        return {k: v for k, v in config.items() if v is not None}
+
+        return {k: v for k, v in config.items() if v}
 
     model_config = SettingsConfigDict(env_prefix="PFM_EVENT_")

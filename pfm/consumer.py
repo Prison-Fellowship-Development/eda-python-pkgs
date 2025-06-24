@@ -74,7 +74,7 @@ class Consumer(Generic[T]):
                     continue
             yield (
                 msg.value()
-                if self.avro_schema is None
+                if self.model_class is None
                 else self.deserializer(
                     msg.value(), SerializationContext(self.topic, MessageField.VALUE)
                 )

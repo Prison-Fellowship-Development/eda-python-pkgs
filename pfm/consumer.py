@@ -12,7 +12,6 @@ from .settings import KafkaSettings
 T = TypeVar("T", bound=BaseModel)
 
 settings = KafkaSettings()
-print(settings.generate_consumer_configuration(indent=2))
 
 
 class Consumer(Generic[T]):

@@ -6,8 +6,8 @@ class KafkaSettings(BaseSettings):
     servers: str = Field(default="localhost:9092")
     protocol: str = Field(default="SASL_PLAINTEXT")
     sasl_mechanism: str = Field(default="SCRAM-SHA-256")
-    sasl_username: str = Field(default="")
-    sasl_password: str = Field(default="")
+    sasl_username: str = Field(default="sasl_user")
+    sasl_password: str = Field(default="sasl_password")
     auto_offset_reset: str = Field(default="earliest")
     schema_registry_url: str = Field(default="http://localhost:8081")
 

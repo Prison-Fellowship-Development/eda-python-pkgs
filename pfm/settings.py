@@ -22,4 +22,4 @@ class KafkaSettings(BaseSettings):
             "auto.offset.reset": self.auto_offset_reset,
         }
 
-    model_config = SettingsConfigDict(env_prefix="PFM_EVENT")
+    model_config = SettingsConfigDict(env_prefix="PFM_EVENT_")

@@ -49,7 +49,7 @@ class Consumer(Generic[T]):
                     {"url": settings.schema_registry_url}
                 ),
                 schema_str=self.model_class.avro_schema(),
-                from_dict=self.model_class,
+                from_dict=lambda msg, ctx: self.model_class.model_validate(msg),
             )
         return self._deserializer
 

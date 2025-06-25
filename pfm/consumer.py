@@ -37,13 +37,12 @@ class Consumer(Generic[T]):
             self._consumer = confluent_kafka.Consumer(
                 settings.generate_consumer_configuration(self.group_id)
             )
-            self._consumer.subscribe([self.topic])
 
         return self._consumer
 
     @property
     def deserializer(self):
-        if self.model_class and not self._deserializer:
+        if not self._deserializer:
             self._deserializer = AvroDeserializer(
                 schema_registry_client=SchemaRegistryClient(
                     {"url": settings.schema_registry_url}
@@ -54,6 +53,7 @@ class Consumer(Generic[T]):
         return self._deserializer
 
     def __enter__(self):
+        self._consumer.subscribe([self.topic])
         return self
 
     def stop(self):

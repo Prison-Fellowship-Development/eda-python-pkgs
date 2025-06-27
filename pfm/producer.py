@@ -35,6 +35,8 @@ class Producer(Generic[T]):
     def produce(
         self, key=None, value: T | str | bytes = None, headers=None, callback=None
     ):
+        self._producer.poll(0)
+
         return self._producer.produce(
             topic=self.topic,
             key=key,

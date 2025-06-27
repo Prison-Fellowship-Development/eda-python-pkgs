@@ -19,7 +19,7 @@ class TestProducer(TestCase):
 
         [schema_registry_client, *_], _ = pfm.producer.AvroSerializer.call_args
         self.assertEqual(pfm.producer.SchemaRegistryClient(), schema_registry_client)
-        
+
     def test_schema_registry_client_receives_proper_config(self):
         self.producer.produce()
 
@@ -60,3 +60,13 @@ class TestProducer(TestCase):
         producer.produce()
 
         self.assertFalse(pfm.producer.AvroSerializer.called)
+
+    def test_producer_polls_just_before_producing(self):
+        self.producer.produce()
+
+        pfm.producer.ConfluentKafkaProducer().poll.assert_called_once()
+
+    def test_producer_polls_with_an_immediate_return(self):
+        self.producer.produce()
+
+        pfm.producer.ConfluentKafkaProducer().poll.assert_called_once_with(0)

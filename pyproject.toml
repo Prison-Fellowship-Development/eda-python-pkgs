@@ -31,3 +31,8 @@ dependencies = [
     "pydantic>=2.5.3",
     "dataclasses-avroschema>=0.47.3",
 ]
+
+[dependency-groups]
+dev = [
+    "dataclasses-avroschema[faker]>=0.47.3",
+]

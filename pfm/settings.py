@@ -32,6 +32,6 @@ class KafkaSettings(BaseSettings):
             "sasl.username": self.sasl_username,
             "sasl.password": self.sasl_password,
         }
-        return config
+        return {k: v for k, v in config.items() if v}
 
     model_config = SettingsConfigDict(env_prefix="PFM_EVENT_")

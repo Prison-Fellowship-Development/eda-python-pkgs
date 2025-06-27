@@ -5,8 +5,6 @@ from pfm.settings import KafkaSettings
 
 
 class TestKafkaSettings(TestCase):
-    def setUp(self): ...
-
     def tearDown(self):
         if "PFM_EVENT_SERVERS" in os.environ:
             del os.environ["PFM_EVENT_SERVERS"]

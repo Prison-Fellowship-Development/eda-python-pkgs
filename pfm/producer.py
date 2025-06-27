@@ -28,7 +28,7 @@ class Producer(Generic[T]):
             self._serializer = AvroSerializer(
                 SchemaRegistryClient({"url": settings.schema_registry_url}),
                 self._model_class.avro_schema(),
-                self._model_class.model_dump,
+                lambda msg, _: msg.model_dump(),
             )
         return self._serializer
 

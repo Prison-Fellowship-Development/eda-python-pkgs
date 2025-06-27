@@ -1,7 +1,7 @@
 from dataclasses_avroschema.pydantic import AvroBaseModel
 
 
-class TestAvroModel(AvroBaseModel):
+class ExampleAvroModel(AvroBaseModel):
     """
     Example Avro model for testing purposes.
     """

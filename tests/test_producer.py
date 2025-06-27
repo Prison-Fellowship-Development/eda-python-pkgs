@@ -2,7 +2,7 @@ from unittest import TestCase
 from unittest.mock import MagicMock
 
 import pfm.producer
-from tests.test_avro_model import TestAvroModel
+from tests.example_avro_model import ExampleAvroModel
 
 
 class TestProducer(TestCase):
@@ -14,8 +14,8 @@ class TestProducer(TestCase):
         pfm.producer.MessageField = MagicMock()
 
         self._topic = "test_topic"
-        self.producer = pfm.producer.Producer[TestAvroModel](
-            self._topic, model_class=TestAvroModel
+        self.producer = pfm.producer.Producer[ExampleAvroModel](
+            self._topic, model_class=ExampleAvroModel
         )
 
     def test_serializer_intialized_with_schema_registry_client(self):
@@ -35,7 +35,7 @@ class TestProducer(TestCase):
         self.producer.produce()
 
         [_, schema_str, _], _ = pfm.producer.AvroSerializer.call_args
-        self.assertEqual(TestAvroModel.avro_schema(), schema_str)
+        self.assertEqual(ExampleAvroModel.avro_schema(), schema_str)
 
     def test_serializer_intialized_with_avro_base_model_dump(self):
         self.producer.produce()

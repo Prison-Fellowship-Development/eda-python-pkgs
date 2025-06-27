@@ -63,9 +63,8 @@ class Consumer(Generic[T]):
         return not self._should_exit
 
     def __exit__(self, exc_type, exc_value, traceback):
-        if self._consumer:
-            self._consumer.close()
-            self._consumer = None
+        self._consumer.close()
+        self._consumer = None
 
     def __iter__(self) -> Iterator[T]:
         while not self._should_exit:

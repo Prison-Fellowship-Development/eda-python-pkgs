@@ -9,27 +9,35 @@ class TestProducer(TestCase):
     def setUp(self):
         pfm.producer.ConfluentKafkaProducer = MagicMock()
         pfm.producer.AvroSerializer = MagicMock()
+        pfm.producer.SchemaRegistryClient = MagicMock()
         self.producer = pfm.producer.Producer[TestAvroModel](
             "test_topic", model_class=TestAvroModel
         )
 
-    def test_serializer_intialized_with_schema_registry_url(self):
+    def test_serializer_intialized_with_schema_registry_client(self):
         self.producer.produce()
 
-        [schema_registry_url, *_], _ = pfm.producer.AvroSerializer.call_args
-        self.assertEqual(schema_registry_url, pfm.producer.settings.schema_registry_url)
+        [schema_registry_client, *_], _ = pfm.producer.AvroSerializer.call_args
+        self.assertEqual(pfm.producer.SchemaRegistryClient(), schema_registry_client)
+        
+    def test_schema_registry_client_receives_proper_config(self):
+        self.producer.produce()
+
+        pfm.producer.SchemaRegistryClient.assert_called_once_with(
+            {"url": pfm.producer.settings.schema_registry_url}
+        )
 
     def test_serializer_intialized_with_schema_string(self):
         self.producer.produce()
 
         [_, schema_str, _], _ = pfm.producer.AvroSerializer.call_args
-        self.assertEqual(schema_str, TestAvroModel.avro_schema())
+        self.assertEqual(TestAvroModel.avro_schema(), schema_str)
 
     def test_serializer_intialized_with_avro_base_model_dump(self):
         self.producer.produce()
 
         [*_, model_dump], _ = pfm.producer.AvroSerializer.call_args
-        self.assertIs(model_dump, TestAvroModel.model_dump)
+        self.assertIs(TestAvroModel.model_dump, model_dump)
 
     def test_produce_serializes_message_before_producing_when_avro_base_model_given(
         self,
@@ -39,7 +47,7 @@ class TestProducer(TestCase):
         self.producer.produce()
 
         serializer.assert_called_once_with(None)
-        
+
     def test_serializer_instantiated_only_one_time(self):
         self.producer.produce()
         self.producer.produce()

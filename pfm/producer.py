@@ -2,6 +2,7 @@ import os
 from typing import TypeVar, Generic, Type
 
 from confluent_kafka import Producer as ConfluentKafkaProducer
+from confluent_kafka.schema_registry import SchemaRegistryClient
 from confluent_kafka.schema_registry.avro import AvroSerializer
 
 from pfm.settings import KafkaSettings
@@ -25,7 +26,7 @@ class Producer(Generic[T]):
     def serializer(self):
         if not self._serializer:
             self._serializer = AvroSerializer(
-                settings.schema_registry_url,
+                SchemaRegistryClient({"url": settings.schema_registry_url}),
                 self._model_class.avro_schema(),
                 self._model_class.model_dump,
             )

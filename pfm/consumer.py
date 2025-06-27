@@ -53,7 +53,7 @@ class Consumer(Generic[T]):
         return self._deserializer
 
     def __enter__(self):
-        self._consumer.subscribe([self.topic])
+        self.consumer.subscribe([self.topic])
         return self
 
     def stop(self):

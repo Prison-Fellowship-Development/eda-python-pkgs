@@ -4,6 +4,7 @@ from typing import TypeVar, Generic, Type
 from confluent_kafka import Producer as ConfluentKafkaProducer
 from confluent_kafka.schema_registry import SchemaRegistryClient
 from confluent_kafka.schema_registry.avro import AvroSerializer
+from confluent_kafka.serialization import MessageField, SerializationContext
 
 from pfm.settings import KafkaSettings
 
@@ -40,7 +41,11 @@ class Producer(Generic[T]):
         return self._producer.produce(
             topic=self.topic,
             key=key,
-            value=self.serializer(value) if self._model_class else value,
+            value=self.serializer(
+                value, SerializationContext(self.topic, MessageField.VALUE)
+            )
+            if self._model_class
+            else value,
             headers=headers,
             callback=callback,
         )

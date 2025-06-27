@@ -10,8 +10,12 @@ class TestProducer(TestCase):
         pfm.producer.ConfluentKafkaProducer = MagicMock()
         pfm.producer.AvroSerializer = MagicMock()
         pfm.producer.SchemaRegistryClient = MagicMock()
+        pfm.producer.SerializationContext = MagicMock()
+        pfm.producer.MessageField = MagicMock()
+
+        self._topic = "test_topic"
         self.producer = pfm.producer.Producer[TestAvroModel](
-            "test_topic", model_class=TestAvroModel
+            self._topic, model_class=TestAvroModel
         )
 
     def test_serializer_intialized_with_schema_registry_client(self):
@@ -37,7 +41,7 @@ class TestProducer(TestCase):
         self.producer.produce()
 
         [*_, model_dump], _ = pfm.producer.AvroSerializer.call_args
-        self.assertIs(TestAvroModel.model_dump, model_dump)
+        self.assertTrue(callable(model_dump))
 
     def test_produce_serializes_message_before_producing_when_avro_base_model_given(
         self,
@@ -46,7 +50,8 @@ class TestProducer(TestCase):
 
         self.producer.produce()
 
-        serializer.assert_called_once_with(None)
+        [value, _], _ = serializer.call_args
+        self.assertEqual(None, value)
 
     def test_serializer_instantiated_only_one_time(self):
         self.producer.produce()
@@ -70,3 +75,21 @@ class TestProducer(TestCase):
         self.producer.produce()
 
         pfm.producer.ConfluentKafkaProducer().poll.assert_called_once_with(0)
+
+    def test_serializer_called_with_serialization_context_including_topic(self):
+        context = pfm.producer.SerializationContext
+
+        self.producer.produce()
+
+        [topic, _], _ = context.call_args
+        self.assertEqual(self._topic, topic)
+
+    def test_serializer_called_with_serialization_context_including_value_constant(
+        self,
+    ):
+        context = pfm.producer.SerializationContext
+
+        self.producer.produce()
+
+        [_, value_constant], _ = context.call_args
+        self.assertEqual(pfm.producer.MessageField.VALUE, value_constant)

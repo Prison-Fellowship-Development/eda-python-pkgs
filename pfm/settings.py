@@ -24,4 +24,14 @@ class KafkaSettings(BaseSettings):
 
         return {k: v for k, v in config.items() if v}
 
+    def generate_producer_configuration(self) -> dict:
+        config = {
+            "bootstrap.servers": self.servers,
+            "security.protocol": self.protocol,
+            "sasl.mechanism": self.sasl_mechanism,
+            "sasl.username": self.sasl_username,
+            "sasl.password": self.sasl_password,
+        }
+        return config
+
     model_config = SettingsConfigDict(env_prefix="PFM_EVENT_")

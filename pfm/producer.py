@@ -31,7 +31,9 @@ class Producer(Generic[T]):
             )
         return self._serializer
 
-    def produce(self, key=None, value=None, headers=None, callback=None):
+    def produce(
+        self, key=None, value: Type[T] | str | bytes = None, headers=None, callback=None
+    ):
         return self._producer.produce(
             topic=self.topic,
             key=key,

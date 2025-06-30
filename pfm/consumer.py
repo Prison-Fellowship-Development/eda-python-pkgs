@@ -1,7 +1,7 @@
 import os
 from typing import TypeVar, Generic, Iterator, Type
 
-import confluent_kafka
+from confluent_kafka import KafkaError, Consumer as KafkaConsumer
 from confluent_kafka.schema_registry import SchemaRegistryClient
 from confluent_kafka.schema_registry.avro import AvroDeserializer
 from confluent_kafka.serialization import SerializationContext, MessageField
@@ -15,7 +15,7 @@ settings = KafkaSettings()
 
 
 class Consumer(Generic[T]):
-    _consumer: confluent_kafka.Consumer | None = None
+    _consumer: KafkaConsumer | None = None
 
     def __init__(
         self, topic, group_id=None, timeout=2.0, model_class: Type[T] | None = None
@@ -32,9 +32,9 @@ class Consumer(Generic[T]):
         self._should_exit = False
 
     @property
-    def consumer(self) -> confluent_kafka.Consumer:
+    def consumer(self) -> KafkaConsumer:
         if not self._consumer:
-            self._consumer = confluent_kafka.Consumer(
+            self._consumer = KafkaConsumer(
                 settings.generate_consumer_configuration(self.group_id)
             )
 
@@ -72,7 +72,7 @@ class Consumer(Generic[T]):
             if msg is None:
                 continue
             if msg.error():
-                if msg.error().code() == confluent_kafka.KafkaError._PARTITION_EOF:
+                if msg.error().code() == KafkaError._PARTITION_EOF:
                     continue
             yield (
                 msg.value()

@@ -1,5 +1,5 @@
 from unittest import TestCase
-from unittest.mock import MagicMock
+from unittest.mock import patch
 
 import pfm.producer
 from tests.example_avro_model import ExampleAvroModel
@@ -7,11 +7,25 @@ from tests.example_avro_model import ExampleAvroModel
 
 class TestProducer(TestCase):
     def setUp(self):
-        pfm.producer.ConfluentKafkaProducer = MagicMock()
-        pfm.producer.AvroSerializer = MagicMock()
-        pfm.producer.SchemaRegistryClient = MagicMock()
-        pfm.producer.SerializationContext = MagicMock()
-        pfm.producer.MessageField = MagicMock()
+        confluent_kafka_producer_patcher = patch("pfm.producer.ConfluentKafkaProducer")
+        confluent_kafka_producer_patcher.start()
+        self.addCleanup(confluent_kafka_producer_patcher.stop)
+
+        avro_serializer_patcher = patch("pfm.producer.AvroSerializer")
+        avro_serializer_patcher.start()
+        self.addCleanup(avro_serializer_patcher.stop)
+
+        schema_registry_client_patcher = patch("pfm.producer.SchemaRegistryClient")
+        schema_registry_client_patcher.start()
+        self.addCleanup(schema_registry_client_patcher.stop)
+
+        serialization_context_patcher = patch("pfm.producer.SerializationContext")
+        serialization_context_patcher.start()
+        self.addCleanup(serialization_context_patcher.stop)
+
+        message_field_patcher = patch("pfm.producer.MessageField")
+        message_field_patcher.start()
+        self.addCleanup(message_field_patcher.stop)
 
         self._topic = "test_topic"
         self.producer = pfm.producer.Producer[ExampleAvroModel](

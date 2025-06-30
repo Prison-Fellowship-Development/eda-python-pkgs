@@ -70,7 +70,7 @@ class Consumer(Generic[T]):
         self._consumer.close()
         self._consumer = None
 
-    def __iter__(self) -> Iterator[T]:
+    def __iter__(self) -> Iterator[T | TombstoneRecord]:
         while not self._should_exit:
             msg = self.consumer.poll(self.timeout)
             if msg is None:

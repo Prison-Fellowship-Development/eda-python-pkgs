@@ -14,6 +14,10 @@ T = TypeVar("T", bound=AvroBaseModel)
 settings = KafkaSettings()
 
 
+class TombstoneRecord(AvroBaseModel):
+    key: str | None = None
+
+
 class Consumer(Generic[T]):
     _consumer: KafkaConsumer | None = None
 
@@ -74,13 +78,18 @@ class Consumer(Generic[T]):
             if msg.error():
                 if msg.error().code() == KafkaError._PARTITION_EOF:
                     continue
-            yield (
-                msg.value()
-                if self.model_class is None
-                else self.deserializer(
-                    msg.value(), SerializationContext(self.topic, MessageField.VALUE)
+
+            if msg.value() is None:
+                yield TombstoneRecord(key=msg.key())
+            else:
+                yield (
+                    msg.value()
+                    if self.model_class is None
+                    else self.deserializer(
+                        msg.value(),
+                        SerializationContext(self.topic, MessageField.VALUE),
+                    )
                 )
-            )
 
     def poll(self, timeout=1.0):
         return self.consumer.poll(timeout)

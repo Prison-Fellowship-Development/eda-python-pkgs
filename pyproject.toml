@@ -35,4 +35,5 @@ dependencies = [
 [dependency-groups]
 dev = [
     "dataclasses-avroschema[faker]>=0.47.3",
+    "pre-commit>=2.21.0",
 ]

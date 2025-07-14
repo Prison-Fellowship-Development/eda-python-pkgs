@@ -1,0 +1,14 @@
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.4.6  # Use latest stable Ruff release
+    hooks:
+      - id: ruff-format
+        name: ruff format (Black-compatible)
+        args:
+          - --line-length=88
+          - --preview  # Optional, to match latest Black style
+      - id: ruff
+        name: ruff check
+        args:
+          - --line-length=88
+          - --preview

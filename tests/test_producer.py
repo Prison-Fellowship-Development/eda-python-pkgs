@@ -41,9 +41,9 @@ class TestProducer(TestCase):
     def test_schema_registry_client_receives_proper_config(self):
         self.producer.produce()
 
-        pfm.producer.SchemaRegistryClient.assert_called_once_with(
-            {"url": pfm.producer.settings.schema_registry_url}
-        )
+        pfm.producer.SchemaRegistryClient.assert_called_once_with({
+            "url": pfm.producer.settings.schema_registry_url
+        })
 
     def test_serializer_intialized_with_schema_string(self):
         self.producer.produce()

@@ -12,7 +12,6 @@ import importlib.util
 import sys
 import logging
 
-from datetime import datetime, timedelta
 from bs4 import BeautifulSoup
 
 # import the stubs dynamically

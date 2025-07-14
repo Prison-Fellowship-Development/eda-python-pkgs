@@ -7,7 +7,6 @@ from confluent_kafka.schema_registry import (
     record_subject_name_strategy,
 )
 from confluent_kafka.schema_registry.avro import AvroSerializer, AvroDeserializer
-from confluent_kafka import avro
 
 
 class Serializer:

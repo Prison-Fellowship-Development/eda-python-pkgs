@@ -5,12 +5,13 @@ from confluent_kafka import Producer as ConfluentKafkaProducer
 from confluent_kafka.schema_registry import SchemaRegistryClient
 from confluent_kafka.schema_registry.avro import AvroSerializer
 from confluent_kafka.serialization import MessageField, SerializationContext
+from dataclasses_avroschema.pydantic import AvroBaseModel
 
 from .settings import KafkaSettings
 
 settings = KafkaSettings()
 
-T = TypeVar("T", bound="AvroBaseModel")
+T = TypeVar("T", bound=AvroBaseModel)
 
 
 class Producer(Generic[T]):

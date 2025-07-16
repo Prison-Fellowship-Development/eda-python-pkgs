@@ -33,6 +33,8 @@ class Consumer(Generic[T]):
             group_id or f"consumer-group-{os.getpid()}"
         )  # Default group ID based on process ID
 
+        self.consumer.subscribe([self.topic])  # Supporting legacy usage behavior
+
         self._should_exit = False
 
     @property
@@ -57,7 +59,6 @@ class Consumer(Generic[T]):
         return self._deserializer
 
     def __enter__(self):
-        self.consumer.subscribe([self.topic])
         return self
 
     def stop(self):

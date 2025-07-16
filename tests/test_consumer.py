@@ -60,13 +60,16 @@ class TestKafkaConsumer(TestCase):
         self.assertEqual(test_msg.key(), message.key)
 
     def test_calling_close_closes_consumer_if_consumer_enabled(self):
-        self._consumer._consumer = MagicMock()
-
         self._consumer.close()
 
         self._consumer.consumer.close.assert_called_once()
 
     def test_calling_close_does_not_close_consumer_if_consumer_disabled(self):
+        self._consumer._consumer = None
+
         self._consumer.close()
 
         self._consumer.consumer.close.assert_not_called()
+
+    def test_consumer_subscribes_to_topic_in_init_method_for_legacy_behavior(self):
+        self._consumer.consumer.subscribe.assert_called_once_with(["test-topic"])

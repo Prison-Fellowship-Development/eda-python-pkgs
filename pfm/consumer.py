@@ -1,4 +1,5 @@
 import os
+import warnings
 from typing import TypeVar, Generic, Iterator, Type
 
 from confluent_kafka import KafkaError, Consumer as KafkaConsumer
@@ -65,6 +66,9 @@ class Consumer(Generic[T]):
         self._should_exit = True
 
     def close(self):
+        warnings.deprecated(
+            "Calling close() directly is deprecated. Consider upgrading to the new contextmanager functionality"
+        )
         self._consumer and self._consumer.close()
 
     def is_active(self) -> bool:

@@ -4,8 +4,6 @@ repos:
     hooks:
       - id: ruff-format
         name: ruff format (Black-compatible)
-        args:
-          - --line-length=88
           - --preview  # Optional, to match latest Black style
       - id: ruff
         name: ruff check

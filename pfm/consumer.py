@@ -48,9 +48,9 @@ class Consumer(Generic[T]):
     def deserializer(self):
         if not self._deserializer:
             self._deserializer = AvroDeserializer(
-                schema_registry_client=SchemaRegistryClient({
-                    "url": settings.schema_registry_url
-                }),
+                schema_registry_client=SchemaRegistryClient(
+                    {"url": settings.schema_registry_url}
+                ),
                 schema_str=self.model_class.avro_schema(),
                 from_dict=lambda msg, ctx: self.model_class.model_validate(msg),
             )
@@ -62,6 +62,9 @@ class Consumer(Generic[T]):
 
     def stop(self):
         self._should_exit = True
+
+    def close(self):
+        self._consumer and self._consumer.close()
 
     def is_active(self) -> bool:
         return not self._should_exit

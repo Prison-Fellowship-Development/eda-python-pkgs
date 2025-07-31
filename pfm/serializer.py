@@ -23,19 +23,12 @@ class Serializer:
         self.avro_serializer = AvroSerializer(
             schema_registry_client = self.schema_registry_client,
             schema_str = self.schema.schema.schema_str,
-            to_dict = self.json_to_dict,
-            conf = {
-                'subject.name.strategy': record_subject_name_strategy,
-                'auto.register.schemas': False
-            }
+            to_dict = self.json_to_dict
         )
         self.avro_deserializer = AvroDeserializer(
             schema_registry_client = self.schema_registry_client,
             schema_str = self.schema.schema.schema_str,
-            from_dict = self.dict_to_json,
-            conf = {
-                'subject.name.strategy': record_subject_name_strategy
-            }            
+            from_dict = self.dict_to_json
         )
 
     def encode(self, topic, data):

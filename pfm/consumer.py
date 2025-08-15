@@ -51,9 +51,10 @@ class Consumer(Generic[T]):
     def deserializer(self):
         if not self._deserializer:
             self._deserializer = AvroDeserializer(
-                schema_registry_client=SchemaRegistryClient(
-                    {"url": settings.schema_registry_url}
-                ),
+                schema_registry_client=SchemaRegistryClient(conf={
+                    "url": settings.schema_registry_url,
+                    "basic.auth.user.info": settings.sasl_username + ":" + settings.sasl_password,
+                }),
                 schema_str=self.model_class.avro_schema(),
                 from_dict=lambda msg, ctx: self.model_class.model_validate(msg),
             )

@@ -28,7 +28,10 @@ class Producer(Generic[T]):
     def serializer(self):
         if not self._serializer:
             self._serializer = AvroSerializer(
-                SchemaRegistryClient({"url": settings.schema_registry_url}),
+                SchemaRegistryClient({
+                    "url": settings.schema_registry_url,
+                    "basic.auth.user.info": settings.sasl_username + ":" + settings.sasl_password,
+                }),
                 self._model_class.avro_schema(),
                 lambda msg, _: msg.model_dump(),
             )

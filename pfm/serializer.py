@@ -34,6 +34,7 @@ class Serializer:
         # if subject name was passed in, then setup schema and avro seralizers
         if self.subject_name is not None:
             self.schema = self.schema_registry_client.get_latest_version(self.subject_name)
+            print(f"DEBUG: self.schema = {self.schema}")
             self.format = self.schema.schema_type
             if self.format == 'AVRO':
                 self.avro_serializer = AvroSerializer(

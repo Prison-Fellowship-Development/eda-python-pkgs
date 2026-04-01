@@ -87,6 +87,7 @@ class Serializer:
             self.subject_name = subjects[0]
             # get the schema for the latest version of the subject
             self.schema = self.schema_registry_client.get_latest_version(self.subject_name)
+            print(f"DEBUG: self.schema = {self.schema}")
             self.format = self.schema.schema_type
             # if schema format is AVRO, setup the deserializer
             if self.format == 'AVRO':

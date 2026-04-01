@@ -12,7 +12,7 @@ version = "0.0.1"
 readme = "README.md"
 requires-python = ">=3.7"
 dependencies = [
-    "confluent_kafka",
+    "confluent_kafka ~= 2.4.0",
     "avro",
     "fastavro",
     "grpcio",
@@ -26,14 +26,5 @@ dependencies = [
     "cachetools",
     "authlib",
     "urllib3",
-    "datetime",
-    "pydantic-settings>=2.0.3",
-    "pydantic>=2.5.3",
-    "dataclasses-avroschema>=0.47.3",
-]
-
-[dependency-groups]
-dev = [
-    "dataclasses-avroschema[faker]>=0.47.3",
-    "pre-commit>=2.21.0",
+    "datetime"
 ]

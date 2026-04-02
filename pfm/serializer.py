@@ -39,6 +39,10 @@ class Serializer:
                 self.avro_serializer = AvroSerializer(
                     schema_registry_client = self.schema_registry_client,
                     schema_str = self.schema.schema.schema_str,
+                    conf = {
+                        'auto.register.schemas': False,
+                        'subject.name.strategy': 'record_subject_name_strategy'
+                    },
                     to_dict = self.json_to_dict
                 )
                 self.avro_deserializer = AvroDeserializer(

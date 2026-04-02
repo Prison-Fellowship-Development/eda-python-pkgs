@@ -41,7 +41,7 @@ class Serializer:
                     schema_str = self.schema.schema.schema_str,
                     conf = {
                         'auto.register.schemas': False,
-                        'subject.name.strategy': 'record_subject_name_strategy'
+                        'subject.name.strategy.type': 'RECORD'
                     },
                     to_dict = self.json_to_dict
                 )

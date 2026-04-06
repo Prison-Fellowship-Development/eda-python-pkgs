@@ -6,7 +6,6 @@ from struct import unpack
 from confluent_kafka.serialization import SerializationContext, MessageField
 from confluent_kafka.schema_registry import SchemaRegistryClient, record_subject_name_strategy
 from confluent_kafka.schema_registry.avro import AvroSerializer, AvroDeserializer
-from confluent_kafka import avro
 
 
 class Serializer:
@@ -36,15 +35,15 @@ class Serializer:
             self.schema = self.schema_registry_client.get_latest_version(self.subject_name)
             self.format = self.schema.schema.schema_type
             if self.format == 'AVRO':
-                # TODO: figure out how to encode with RECORD strategy using subject name
+                # Record strategy: SR subject is the Avro record name (e.g. namespace.Type), not {topic}-value.
+                # With auto.register off, the schema must already exist under that subject (lookup only).
                 self.avro_serializer = AvroSerializer(
                     schema_registry_client = self.schema_registry_client,
                     schema_str = self.schema.schema.schema_str,
-                    #conf = {
-                    #    'auto.register.schemas': False,
-                    #    'use.latest.version': True,
-                    #    #'subject.name.strategy.type': 'RECORD'
-                    #},
+                    conf = {
+                        'auto.register.schemas': False,
+                        'subject.name.strategy': record_subject_name_strategy,
+                    },
                     to_dict = self.json_to_dict
                 )
                 self.avro_deserializer = AvroDeserializer(

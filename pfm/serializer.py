@@ -97,7 +97,7 @@ class Serializer:
         schema_id = self.get_schema_id(data)
         if schema_id is None or schema_id == 0:
             # no schema in message so assume it was just plain JSON
-            return json.loads(data)
+            return json.loads(data), None
         
         # if this schema id different from the previous one, then setup new schema for decoding
         if self.schema_id != schema_id:
@@ -116,6 +116,6 @@ class Serializer:
                 self.avro_deserializer = None
 
         if self.format == 'AVRO':
-            return self.decode(topic, data)
+            return self.decode(topic, data), self.subject_name
         else:
-            return json.loads(data)
+            return json.loads(data), None

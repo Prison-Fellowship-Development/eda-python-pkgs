@@ -33,7 +33,10 @@ class Serializer:
         # if subject name was passed in, then setup schema and avro seralizers
         if self.subject_name is not None:
             self.schema = self.schema_registry_client.get_latest_version(self.subject_name)
-            self.format = self.schema.schema.schema_type
+            if hasattr(self.schema.schema, 'schema_type'):
+                self.format = self.schema.schema.schema_type
+            else:
+                self.format = None
             if self.format == 'AVRO':
                 # Record strategy: SR subject is the Avro record name (e.g. namespace.Type), not {topic}-value.
                 # With auto.register off, the schema must already exist under that subject (lookup only).
@@ -104,7 +107,10 @@ class Serializer:
             self.schema_id = schema_id
             self.subject_name = self.get_subject_name(self.schema_id)
             self.schema = self.get_schema(self.subject_name)
-            self.format = self.schema.schema.schema_type
+            if hasattr(self.schema.schema, 'schema_type'):
+                self.format = self.schema.schema.schema_type
+            else:
+                self.format = None
             if self.format == 'AVRO':
                 # if schema format is AVRO, setup the deserializer
                 self.avro_deserializer = AvroDeserializer(

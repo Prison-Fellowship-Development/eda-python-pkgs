@@ -36,6 +36,7 @@ class Serializer:
             self.schema = self.schema_registry_client.get_latest_version(self.subject_name)
             self.format = self.schema.schema.schema_type
             if self.format == 'AVRO':
+                # TODO: figure out how to encode with RECORD strategy using subject name
                 self.avro_serializer = AvroSerializer(
                     schema_registry_client = self.schema_registry_client,
                     schema_str = self.schema.schema.schema_str,

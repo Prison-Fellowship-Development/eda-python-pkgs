@@ -16,7 +16,7 @@ class Consumer:
             'sasl.username': os.getenv('PFM_EVENT_SASL_USERNAME','superuser'),
             'sasl.password': os.getenv('PFM_EVENT_SASL_PASSWORD','secretpassword'),
             'group.id': self.group_id,
-            'auto.offset.reset': 'earliest'
+            'auto.offset.reset': os.getenv('PFM_EVENT_OFFSET_RESET','latest')
         })
         self.consumer.subscribe([topic])
 
